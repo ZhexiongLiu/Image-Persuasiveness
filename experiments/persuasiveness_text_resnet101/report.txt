@@ -1,0 +1,3 @@
+persuasiveness_text_resnet101 5 fold validation...
+f1        precision recall    acc       
+0.492     0.5067    0.5066    0.4955    

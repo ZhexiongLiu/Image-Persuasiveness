@@ -39,8 +39,8 @@ def encode_persuasive_mode(labels):
             ethos = 1.0
     return [logos, pathos, ethos]
 
-def encode_persuasiveness(label, persuasive_label_threshold=0.3):
-    if label >= persuasive_label_threshold:
+def encode_persuasiveness(label, args):
+    if label >= args.persuasive_label_threshold:
         label = 1.0
     else:
         label = 0.0
@@ -137,22 +137,19 @@ def get_exp_name(args, is_print=True):
     else:
         data_mode = "multimodality"
 
-    if args.data_mode != 0:
-        if args.img_model == 0:
-            img_model = "resnet50"
-        elif args.img_model == 1:
-            img_model = "resnet101"
-        else:
-            img_model = "vgg16"
 
-        exp_name = f"{exp_mode}_{data_mode}_{img_model}"
+    if args.img_model == 0:
+        img_model = "resnet50"
+    elif args.img_model == 1:
+        img_model = "resnet101"
     else:
-        exp_name = f"{exp_mode}_{data_mode}"
+        img_model = "vgg16"
+
+    exp_name = f"{exp_mode}_{data_mode}_{img_model}"
 
     if is_print:
         print(f"Experiment {exp_name}")
     return exp_name
-
 
 
 def get_argparser():
@@ -169,12 +166,12 @@ def get_argparser():
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum rate')
     parser.add_argument('--step-size', default=5, type=int, help='step size for schedular')
     parser.add_argument('--gamma', default=0.1, type=float, help='gamma value for schedular')
-    parser.add_argument('--persuasive-label-threshold', default=0.3, type=float, help='threshold to categorize persuasive labels')
+    parser.add_argument('--persuasive-label-threshold', default=0.6, type=float, help='threshold to categorize persuasive labels')
     parser.add_argument('--kfold', default=5, help='number of fold validation')
     parser.add_argument('--img-model', default=0, choices=[0,1,2], type=int, help='0:Resnet50; 1:Resnet101; 2:VGG16')
+    parser.add_argument('--save-checkpoint', default=0, choices=[0,1], type=int, help='0:do not save checkpoints; 1:save checkpoints')
 
     return parser
-
 
 class Logger(object):
     def __init__(self, filename='default.log', stream=sys.stdout):

@@ -35,7 +35,7 @@ class ImageDataset(Dataset):
 
         if self.args.exp_mode == 0:
             label = self.annotation.loc[idx, 'persuasiveness']
-            label = encode_persuasiveness(label)
+            label = encode_persuasiveness(label, self.args)
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 1:
             label = self.annotation.loc[idx, 'content']
@@ -95,7 +95,7 @@ class TextDataset(Dataset):
 
         if self.args.exp_mode == 0:
             label = self.annotation.loc[idx, 'persuasiveness']
-            label = encode_persuasiveness(label)
+            label = encode_persuasiveness(label, self.args)
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 1:
             label = self.annotation.loc[idx, 'content']
@@ -168,7 +168,7 @@ class ImageTextDataset(Dataset):
 
         if self.args.exp_mode == 0:
             label = self.annotation.loc[idx, 'persuasiveness']
-            label = encode_persuasiveness(label)
+            label = encode_persuasiveness(label, self.args)
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 1:
             label = self.annotation.loc[idx, 'content']

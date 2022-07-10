@@ -1,0 +1,3 @@
+persuasiveness_multimodality_resnet50 5 fold validation...
+f1        precision recall    acc       
+0.5388    0.54      0.5401    0.5504    

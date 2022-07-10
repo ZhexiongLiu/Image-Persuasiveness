@@ -119,14 +119,14 @@ def train_model_binary_classification(model, train_dataloaders, val_dataloaders,
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
             predict_df.to_csv(os.path.join(args.exp_dir, f"fold_{fold}_results.csv"), index=False)
-
-        # checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
-        # save_checkpoint(args, {
-        #     'epoch': epoch + 1,
-        #     'state_dict': model.state_dict(),
-        #     'best_f1': best_f1,
-        #     'optimizer': optimizer.state_dict(),
-        # }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
+        if args.save_checkpoint == 1:
+            checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
+            save_checkpoint(args, {
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_f1': best_f1,
+                'optimizer': optimizer.state_dict(),
+            }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
         print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
@@ -218,14 +218,14 @@ def train_model_multi_classification(model, train_dataloaders, val_dataloaders, 
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
             predict_df.to_csv(os.path.join(args.exp_dir, f"fold_{fold}_results.csv"), index=False)
-
-        # checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
-        # save_checkpoint(args, {
-        #     'epoch': epoch + 1,
-        #     'state_dict': model.state_dict(),
-        #     'best_f1': best_f1,
-        #     'optimizer': optimizer.state_dict(),
-        # }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
+        if args.save_checkpoint == 1:
+            checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
+            save_checkpoint(args, {
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_f1': best_f1,
+                'optimizer': optimizer.state_dict(),
+            }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
         print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
@@ -317,20 +317,20 @@ def train_model_multi_label_classification(model, train_dataloaders, val_dataloa
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
             predict_df.to_csv(os.path.join(args.exp_dir, f"fold_{fold}_results.csv"), index=False)
-
-        # checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
-        # save_checkpoint(args, {
-        #     'epoch': epoch + 1,
-        #     'state_dict': model.state_dict(),
-        #     'best_f1': best_f1,
-        #     'optimizer': optimizer.state_dict(),
-        # }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
+        if args.save_checkpoint == 1:
+            checkpoint_name = os.path.join(args.exp_dir, f'fold_{fold}_model_epoch_{epoch+1}.pth.tar')
+            save_checkpoint(args, {
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_f1': best_f1,
+                'optimizer': optimizer.state_dict(),
+            }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
         print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
         print(classification_report(gold_labels, predicted_labels, digits=4))
 
-    return best_f1, best_precision, best_recall, best_acc
+    return best_f1, best_precision, best_recall, 0
 
 
 if __name__ == '__main__':

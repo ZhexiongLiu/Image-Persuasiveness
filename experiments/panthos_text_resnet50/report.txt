@@ -1,0 +1,3 @@
+panthos_text_resnet50 5 fold validation...
+f1        precision recall    acc       
+0.4018    0.5093    0.5238    0.4606    

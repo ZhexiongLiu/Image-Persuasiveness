@@ -1,0 +1,3 @@
+image_content_image_resnet50 5 fold validation...
+f1        precision recall    acc       
+0.148     0.2088    0.1989    0.1633    
