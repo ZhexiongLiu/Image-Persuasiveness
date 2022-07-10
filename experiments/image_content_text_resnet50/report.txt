@@ -1,3 +1,0 @@
-image_content_text_resnet50 5 fold validation...
-f1        precision recall    acc       
-0.1692    0.2008    0.2002    0.2215    

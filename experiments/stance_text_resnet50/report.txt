@@ -1,3 +1,0 @@
-stance_text_resnet50 5 fold validation...
-f1        precision recall    acc       
-0.541     0.551     0.55      0.5454    

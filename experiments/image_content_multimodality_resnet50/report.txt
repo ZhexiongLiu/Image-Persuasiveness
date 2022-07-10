@@ -1,3 +1,0 @@
-image_content_multimodality_resnet50 5 fold validation...
-f1        precision recall    acc       
-0.1718    0.2037    0.184     0.2201    
