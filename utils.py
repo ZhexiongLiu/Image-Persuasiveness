@@ -4,6 +4,9 @@ import argparse
 import shutil
 import os
 import sys
+import cv2
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 from transformers import BertTokenizer
 
 def encode_image_content_type(label):
@@ -111,6 +114,23 @@ def make_dir(path):
     if os.path.exists(os.path.join(path, "error.log")):
         os.remove(os.path.join(path, "error.log"))
 
+def plot_image(args, img_id_list, prob_list, option="", is_show=False):
+    fig = plt.figure(figsize=(10, 2.5))
+    columns = 5
+    rows = 1
+    for i in range(columns*rows):
+        img_id = img_id_list[i]
+        img = mpimg.imread(f'./data/images/{img_id}.jpg')
+        img_resized = cv2.resize(img, (4000, 4000))
+        fig.add_subplot(rows, columns, i+1)
+        plt.imshow(img_resized)
+        plt.axis('off')
+        plt.title(f"id {img_id}\nprob {round(prob_list[i],3)}", fontsize=8)
+    fig.text(.5, .1, f'{option} text_id: {args.text_id}', ha='center')
+    if is_show:
+        plt.show()
+    plt.savefig(os.path.join(args.exp_dir,f"demo_{args.text_id}.jpg"))
+
 
 def get_exp_name(args, is_print=True):
     ## declare experimental name
@@ -145,7 +165,7 @@ def get_exp_name(args, is_print=True):
     else:
         img_model = "vgg16"
 
-    exp_name = f"{exp_mode}_{data_mode}_{img_model}"
+    exp_name = f"{exp_mode}_{data_mode}_{img_model}_persuasive_threshold_{args.persuasive_label_threshold}"
 
     if is_print:
         print(f"Experiment {exp_name}")
@@ -161,7 +181,7 @@ def get_argparser():
     parser.add_argument('--data-mode', default=2, choices=[0,1,2], type=int, help='0:text; 1:image; 2:image+text')
     parser.add_argument('--gpus', default='0', type=str, help='specified gpus')
     parser.add_argument('--seed', default=22, type=int, help='random seed number')
-    parser.add_argument('--batch-size', default=32, type=int, help='number of samples per batch')
+    parser.add_argument('--batch-size', default=16, type=int, help='number of samples per batch')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum rate')
     parser.add_argument('--step-size', default=5, type=int, help='step size for schedular')
