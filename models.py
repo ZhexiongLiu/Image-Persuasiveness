@@ -15,7 +15,7 @@ class ImageModelResNet50(torch.nn.Module):
         self.avgpool = self.resnet50.avgpool
         self.resnet50 = torch.nn.Sequential(*list(self.resnet50.children())[:-2])
         for param in self.resnet50.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         self.fc = torch.nn.Sequential(
             torch.nn.Linear(2048, 1024),
@@ -42,7 +42,7 @@ class ImageModelResNet101(torch.nn.Module):
         self.avgpool = self.resnet101.avgpool
         self.resnet101 = torch.nn.Sequential(*list(self.resnet101.children())[:-2])
         for param in self.resnet101.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         self.fc = torch.nn.Sequential(
             torch.nn.Linear(2048, 1024),
@@ -69,7 +69,7 @@ class ImageModelVGG16(torch.nn.Module):
         self.avgpool = self.vgg.avgpool
         self.vgg = torch.nn.Sequential(*list(self.vgg.children())[:-1])
         for param in self.vgg.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         self.fc = torch.nn.Sequential(
             torch.nn.Linear(25088, 4096, bias=True),
@@ -127,7 +127,7 @@ class MultiModelResnet50(torch.nn.Module):
         self.avgpool = self.resnet50.avgpool
         self.resnet50 = torch.nn.Sequential(*list(self.resnet50.children())[:-2])
         for param in self.resnet50.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         # self.dropout = torch.nn.Dropout(p=0.25)
         # self.relu = torch.nn.ReLU()
@@ -173,7 +173,7 @@ class MultiModelResnet101(torch.nn.Module):
         self.avgpool = self.resnet101.avgpool
         self.resnet101 = torch.nn.Sequential(*list(self.resnet101.children())[:-2])
         for param in self.resnet101.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         # self.dropout = torch.nn.Dropout(p=0.25)
         # self.relu = torch.nn.ReLU()
@@ -219,7 +219,7 @@ class MultiModelVGG16(torch.nn.Module):
         self.avgpool = self.vgg.avgpool
         self.vgg = torch.nn.Sequential(*list(self.vgg.children())[:-1])
         for param in self.vgg.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
 
         self.projector = torch.nn.Sequential(
             torch.nn.Linear(25088, 4096, bias=True),

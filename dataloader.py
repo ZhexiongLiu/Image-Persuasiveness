@@ -50,28 +50,32 @@ class ImageDataset(Dataset):
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot
             label = torch.FloatTensor(label)
         elif self.args.exp_mode == 4: # logos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[0]
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 5: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[1]
             label = torch.FloatTensor([label])
         else: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[2]
             label = torch.FloatTensor([label])
 
@@ -79,11 +83,13 @@ class ImageDataset(Dataset):
 
 
 class TextDataset(Dataset):
-    def __init__(self, args, annotation):
+    def __init__(self, args, annotation, root_dir, transform=None):
         self.annotation = annotation
+        self.transform = transform
         annotation["tweet_text"] = annotation["tweet_text"].apply(lambda x: preprocessor.clean(x))
         self.input_ids, self.attention_masks = bert_tokenizer(annotation["tweet_text"].tolist())
         self.args = args
+        self.root_dir = root_dir
 
     def __len__(self):
         return len(self.annotation)
@@ -92,6 +98,14 @@ class TextDataset(Dataset):
         text_id = str(self.annotation.loc[idx, 'tweet_id'])
         input_id = self.input_ids[idx]
         attention_mask = self.attention_masks[idx]
+
+        img_id = str(self.annotation.loc[idx, 'tweet_id'])
+        img_path = os.path.join(self.root_dir,  f'{img_id}.jpg')
+        try:
+            # corrupted image - even if for text only dataloader
+            image = Image.open(img_path).convert('RGB')
+        except:
+            return None
 
         if self.args.exp_mode == 0:
             label = self.annotation.loc[idx, 'persuasiveness']
@@ -110,28 +124,32 @@ class TextDataset(Dataset):
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot
             label = torch.FloatTensor(label)
         elif self.args.exp_mode == 4: # logos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[0]
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 5: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[1]
             label = torch.FloatTensor([label])
         else: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[2]
             label = torch.FloatTensor([label])
 
@@ -174,7 +192,8 @@ class ImageTextDataset(Dataset):
             label = self.annotation.loc[idx, 'content']
             label = encode_image_content_type(label)
             # skip "other" label
-            if label == 6: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if label == 6: return None
         elif self.args.exp_mode == 2: # stance
             label = self.annotation.loc[idx, 'stance']
             label = encode_stance(label)
@@ -183,28 +202,32 @@ class ImageTextDataset(Dataset):
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot
             label = torch.FloatTensor(label)
         elif self.args.exp_mode == 4: # logos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[0]
             label = torch.FloatTensor([label])
         elif self.args.exp_mode == 5: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[1]
             label = torch.FloatTensor([label])
         else: # ethos
             label = self.annotation.loc[idx, 'persuasion_mode']
             label_onehot = encode_persuasive_mode(label)
             # skip no persuasion mode example
-            # if sum(label_onehot) == 0: return None
+            if self.args.skip_non_persuasion_mode == 1:
+                if sum(label_onehot) == 0: return None
             label = label_onehot[2]
             label = torch.FloatTensor([label])
 

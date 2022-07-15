@@ -165,7 +165,14 @@ def get_exp_name(args, is_print=True):
     else:
         img_model = "vgg16"
 
-    exp_name = f"{exp_mode}_{data_mode}_{img_model}_persuasive_threshold_{args.persuasive_label_threshold}"
+    if args.exp_mode == 0:
+        exp_name = f"{exp_mode}_{data_mode}_{img_model}_persuasive_threshold_{args.persuasive_label_threshold}"
+    else:
+        exp_name = f"{exp_mode}_{data_mode}_{img_model}"
+
+    if args.exp_mode in [3,4,5,6]:
+        if args.skip_non_persuasion_mode == 0:
+            exp_name += "_with_whole_dataset"
 
     if is_print:
         print(f"Experiment {exp_name}")
@@ -176,7 +183,7 @@ def get_argparser():
     parser = argparse.ArgumentParser(description='Persuasiveness')
     parser.add_argument('--data-dir', default='./data', help='path to data')
     parser.add_argument('--exp-dir', default='./experiments/debug', help='path save experimental results')
-    parser.add_argument('--exp-mode', default=0, choices=[0,1,2,3,4,5,6], type=int, help='0:persuasive; 1:image content; 2: stance; 3: perusasion_mode; 4:persuasive mode logos; 5:persuasive mode panthos; 6:persuasive mode ethos')
+    parser.add_argument('--exp-mode', default=5, choices=[0,1,2,3,4,5,6], type=int, help='0:persuasive; 1:image content; 2: stance; 3: perusasion_mode; 4:persuasive mode logos; 5:persuasive mode panthos; 6:persuasive mode ethos')
     parser.add_argument('--num-epochs', default=10, type=int, help='number of running epochs')
     parser.add_argument('--data-mode', default=2, choices=[0,1,2], type=int, help='0:text; 1:image; 2:image+text')
     parser.add_argument('--gpus', default='0', type=str, help='specified gpus')
@@ -190,6 +197,7 @@ def get_argparser():
     parser.add_argument('--kfold', default=5, help='number of fold validation')
     parser.add_argument('--img-model', default=0, choices=[0,1,2], type=int, help='0:Resnet50; 1:Resnet101; 2:VGG16')
     parser.add_argument('--save-checkpoint', default=0, choices=[0,1], type=int, help='0:do not save checkpoints; 1:save checkpoints')
+    parser.add_argument('--skip-non-persuasion-mode', default=0, choices=[0,1], type=int, help='0:do not skip; 1:skip')
 
     return parser
 

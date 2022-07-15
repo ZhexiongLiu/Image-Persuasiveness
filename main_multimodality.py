@@ -1,5 +1,5 @@
 import os.path
-
+from sklearn.utils import shuffle
 import torch
 import torchvision
 import json
@@ -41,6 +41,7 @@ def train_model_binary_classification(model, train_dataloaders, val_dataloaders,
     best_f1 = 0.0
     best_precision = 0.0
     best_recall = 0.0
+    best_epoch_num = 0
 
     for epoch in range(num_epochs):
         print('Fold {} Epoch {}/{}'.format(fold+1, epoch+1, num_epochs))
@@ -107,18 +108,19 @@ def train_model_binary_classification(model, train_dataloaders, val_dataloaders,
         # epoch_acc = running_corrects.double() / len(val_dataset)
 
         epoch_metrics = classification_report(gold_labels, predicted_labels, output_dict=True, digits=4)
-        epoch_f1 = epoch_metrics["macro avg"]['f1-score']
-        epoch_precision = epoch_metrics["macro avg"]['precision']
-        epoch_recall = epoch_metrics["macro avg"]['recall']
+        epoch_f1 = epoch_metrics["1.0"]['f1-score']
+        epoch_precision = epoch_metrics["1.0"]['precision']
+        epoch_recall = epoch_metrics["1.0"]['recall']
         epoch_acc = epoch_metrics["accuracy"]
 
         is_best_epoch = False
-        if best_f1 < epoch_f1:
+        if  best_f1 <= epoch_f1:
             best_f1 = epoch_f1
             best_acc = epoch_acc
             best_loss = epoch_loss
             best_precision = epoch_precision
             best_recall = epoch_recall
+            best_epoch_num = epoch
 
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
@@ -133,7 +135,7 @@ def train_model_binary_classification(model, train_dataloaders, val_dataloaders,
             }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
-        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
+        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}, epoch {}'.format(best_loss, best_acc, best_f1, best_precision, best_recall, best_epoch_num+1))
         print(classification_report(gold_labels, predicted_labels, digits=4))
 
     return best_f1, best_precision, best_recall, best_acc
@@ -144,6 +146,7 @@ def train_model_multi_classification(model, train_dataloaders, val_dataloaders, 
     best_f1 = 0.0
     best_precision = 0.0
     best_recall = 0.0
+    best_epoch_num = 0
 
     for epoch in range(num_epochs):
         print('Fold {} Epoch {}/{}'.format(fold+1, epoch+1, num_epochs))
@@ -216,12 +219,13 @@ def train_model_multi_classification(model, train_dataloaders, val_dataloaders, 
         epoch_acc = epoch_metrics["accuracy"]
 
         is_best_epoch = False
-        if best_f1 < epoch_f1:
+        if  best_f1 <= epoch_f1:
             best_f1 = epoch_f1
             best_acc = epoch_acc
             best_loss = epoch_loss
             best_precision = epoch_precision
             best_recall = epoch_recall
+            best_epoch_num = epoch
 
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
@@ -236,7 +240,7 @@ def train_model_multi_classification(model, train_dataloaders, val_dataloaders, 
             }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
-        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
+        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}, epoch {}'.format(best_loss, best_acc, best_f1, best_precision, best_recall, best_epoch_num+1))
         print(classification_report(gold_labels, predicted_labels, digits=4))
 
     return best_f1, best_precision, best_recall, best_acc
@@ -248,6 +252,7 @@ def train_model_multi_label_classification(model, train_dataloaders, val_dataloa
     best_f1 = 0.0
     best_precision = 0.0
     best_recall = 0.0
+    best_epoch_num = 0
 
     for epoch in range(num_epochs):
         print('Fold {} Epoch {}/{}'.format(fold+1, epoch+1, num_epochs))
@@ -319,12 +324,13 @@ def train_model_multi_label_classification(model, train_dataloaders, val_dataloa
         epoch_recall = epoch_metrics["macro avg"]['recall']
 
         is_best_epoch = False
-        if best_f1 < epoch_f1:
+        if  best_f1 <= epoch_f1:
             best_f1 = epoch_f1
             best_acc = epoch_acc
             best_loss = epoch_loss
             best_precision = epoch_precision
             best_recall = epoch_recall
+            best_epoch_num = epoch
 
             is_best_epoch = True
             predict_df = pd.DataFrame({"ids":predicted_text_ids, "gold_labels":gold_labels, "predicted_labels":predicted_labels, "probabilities": predicted_probs})
@@ -339,7 +345,7 @@ def train_model_multi_label_classification(model, train_dataloaders, val_dataloa
             }, fold=fold, filename=checkpoint_name, is_best=is_best_epoch, save_best_only=True)
 
         print('val loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(epoch_loss, epoch_acc, epoch_f1, epoch_precision, epoch_recall))
-        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(best_loss, best_acc, best_f1, best_precision, best_recall))
+        print('best loss: {:.4f}, acc: {:.4f}, f1: {:.4f}, precision: {:.4f}, recall: {:.4f}, epoch {}'.format(best_loss, best_acc, best_f1, best_precision, best_recall, best_epoch_num+1))
         print(classification_report(gold_labels, predicted_labels, digits=4))
 
     return best_f1, best_precision, best_recall, 0
@@ -411,6 +417,11 @@ if __name__ == '__main__':
     acc_list = []
 
     df = pd.read_csv(os.path.join(args.data_dir, 'gun_control_annotation.csv'), index_col=0)
+    if args.exp_mode == 3 or args.exp_mode == 4 or args.exp_mode == 5 or args.exp_mode == 6:
+        df = df[df["persuasion_mode"].apply(lambda x: len(str(x)) > 4)]
+
+    df = shuffle(df, random_state=args.seed)
+
     kfold = KFold(n_splits=args.kfold, shuffle=True, random_state=args.seed)
     for fold, (train_idx, val_idx) in enumerate(kfold.split(df)):
         print('Running fold {}...'.format(fold + 1))
