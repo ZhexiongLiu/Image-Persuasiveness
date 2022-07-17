@@ -82,8 +82,8 @@ def get_res_table():
         # with open(os.path.join(subdir, "report.txt"), "r") as f:
         #     lines = f.readlines()
         # exp_res = f"{exp_name}{'': <10}{lines[2][:-1]}"
-        exp_res = report_res(subdir, exp_name, is_majority=False, print_option=0)
-        exp_majority_res = report_res(subdir, exp_name, is_majority=True, print_option=0)
+        exp_res = report_res(subdir, exp_name, is_majority=False, print_option=1)
+        exp_majority_res = report_res(subdir, exp_name, is_majority=True, print_option=1)
 
         exp_res = exp_res.split(" ")
         exp_majority_res = exp_majority_res.split(" ")
