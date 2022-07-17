@@ -5,4 +5,5 @@
 *.pyc
 *.sh
 *.tar
+*.DS_Store
 
