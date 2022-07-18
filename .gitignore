@@ -5,5 +5,8 @@
 *.pyc
 *.sh
 *.tar
+*.pptx
+*.pdf
 *.DS_Store
-
+*.graffle
+*.ipynb
